@@ -6,7 +6,8 @@ import {
   Patch, 
   Post, 
   Body, 
-  Query 
+  Query, 
+  NotFoundException
 } from '@nestjs/common';
 import { MoviesService } from './movies.service'
 import { Movie } from './entities/movie.entity';
@@ -23,7 +24,11 @@ export class MoviesController {
 
   @Get("/:id")
   getOne(@Param("id") movieId:string ): Movie {
-      return this.moviesService.getOne(movieId);
+    const movie = this.moviesService.getOne(movieId);
+    if(!movie) {
+      throw new NotFoundException(`Movie with ID: ${movieId} not found`);
+    }
+    return movie;
   }
 
   @Post()
